@@ -1,0 +1,24 @@
+# Python Bytecode and Cache
+__pycache__/
+*.py[cod]
+
+# Virtual Environments
+venv/
+.venv/
+env/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints
+
+# Testing
+.pytest_cache/
+.coverage
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Flexo Setup Sensitive Files
+flexo-setup/docker-compose/env/*.env
