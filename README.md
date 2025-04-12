@@ -82,8 +82,8 @@ try:
                 "@type": "DataVersion",
                 "payload": {
                     "@id": element_id,
-                    "@type": "BlockDefinition", # Example type
-                    "name": "MyExampleBlock"
+                    "@type": "PartDefinition", # Example type
+                    "name": "MyExamplePartDefinition"
                 }
             }]
         }
