@@ -44,7 +44,7 @@ class SysMLV2Client:
                 method=method,
                 url=url,
                 params=params,
-                data=json_data,
+                json=json_data,
             )
 
             # Check for specific error codes first
