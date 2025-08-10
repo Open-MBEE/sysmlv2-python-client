@@ -37,7 +37,7 @@ class SysMLV2Client:
         expected_status: int = 200,
     ) -> Dict[str, Any]:
         url = f"{self.base_url}{endpoint}"
-        json_data = json.dumps(data) if data else None
+        json_data = data
 
         try:
             response = self._session.request(
