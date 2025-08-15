@@ -99,6 +99,14 @@ class SysMLV2Client:
             data=project_data,
             expected_status=200  
         )
+
+    def delete_project(self, project_id: str):
+        return self._request(
+            method="DELETE",
+            endpoint=f"/projects/{project_id}",
+            expected_status=200  
+        )
+
     def get_project_by_id(self, project_id: str) -> Dict[str, Any]:
         endpoint = f"/projects/{project_id}"
         return self._request(method="GET", endpoint=endpoint, expected_status=200)
