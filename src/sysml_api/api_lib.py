@@ -2,20 +2,6 @@ import numpy as np
 from sysmlv2_client import SysMLV2Client, SysMLV2Error, SysMLV2NotFoundError
 from typing import Any, Dict
 
-minimal_payload = [
-    {
-        "payload": {
-            "@type": "Empty",
-            "@id": "8dd9e99d-ec41-44d8-bb18-a1d849d3aff5",
-            "elementId": "8dd9e99d-ec41-44d8-bb18-a1d849d3aff5",
-            "qualifiedName": "",
-            "isImpliedIncluded": True,
-            "isLibraryElement": False,
-            "ownedElement": [],
-            "ownedRelationship": []
-        }
-    }
-]
 def create_sysml_project(client: SysMLV2Client, name:str, description:str="project description"):
     created_project = None
     example_project_id = None
@@ -29,11 +15,6 @@ def create_sysml_project(client: SysMLV2Client, name:str, description:str="proje
         created_project = client.create_project(new_project_data)
         # Store the ID for later use
         example_project_id = created_project.get('@id')
-        # if not example_project_id:
-        #      print("\n*** WARNING: Could not extract project ID ('@id') from response! Subsequent steps might fail. ***")
-        # else:
-        #     #create empty commit so we can branch off an empty commit initially
-        #     commit_response, commit_id = commit_to_project(client, example_project_id, minimal_payload)
     except SysMLV2Error as e:
         print(f"Error creating project: {e}")
     return created_project, example_project_id, commit_id
