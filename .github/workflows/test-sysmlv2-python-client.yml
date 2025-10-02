@@ -3,12 +3,8 @@ name: Test sysmlv2-python-client
 on:
   push:
     branches: [ main, develop ]
-    paths-ignore:
-      - '.github/**'
   pull_request:
     branches: [ main, develop ]
-    paths-ignore:
-      - '.github/**'
 
 jobs:
   test:
