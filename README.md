@@ -15,9 +15,7 @@ A basic Python client library for interacting with a SysML v2 API server, specif
 *   Includes basic error handling and custom exceptions.
 
 ## Setup
-
 ### 1. Run Flexo SysMLv2 Service Locally
-
 This client is designed to work with a running instance of the OpenMBEE Flexo SysMLv2 service.
 
 *   **Prerequisites:** Docker and Docker Compose installed.
@@ -31,7 +29,6 @@ This client is designed to work with a running instance of the OpenMBEE Flexo Sy
 
 ### 2. Install Client (Development)
 
-
 ```python
 # Example: Add src to path if running scripts/notebooks from project root
 import sys
@@ -42,7 +39,6 @@ from sysmlv2_client import SysMLV2Client
 ```
 
 ## Basic Usage
-
 ```python
 from sysmlv2_client import SysMLV2Client, SysMLV2Error
 from pprint import pprint
@@ -122,3 +118,31 @@ Unit tests are implemented using `pytest` and `requests-mock`.
     ```bash
     pytest
     ```
+
+## API
+### Basic v2 API
+* get_projects
+* create_project
+* delete_project
+* get_project_by_id
+* get_element
+* get_owned_elements
+* create_commit
+* get_commit_by_id
+* list_commits
+* list_branches
+* create_branch
+* get_branch_by_id
+* list_tags
+* create_tag
+* get_tag_by_id
+* list_elements
+* list_relationships
+
+### Convenience functions
+* create_sysml_project
+* get_project_by_name
+* commit_to_project
+* get_last_commit_from_project
+* create_branch
+ 
