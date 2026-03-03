@@ -75,7 +75,7 @@ def delete_project_data (client: SysMLV2Client, proj_id:str, branch_id:str = Non
         if "@id" in elem
     ]
     commit = {"@type": "Commit", "description": f"delete all elements", "change": change_payload}
-    print (commit)
+    #print (commit)
 
     try:
         resp = client.create_commit(proj_id, commit, branch_id=branch_id)
