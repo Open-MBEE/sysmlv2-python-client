@@ -126,8 +126,15 @@ class SysMLV2Client:
         else:
             return []
 
-    def create_commit(self, project_id: str, commit_data: Dict[str, Any]) -> Dict[str, Any]:
-        endpoint = f"/projects/{project_id}/commits"
+    def create_commit(self, project_id: str, commit_data: Dict[str, Any], branch_id:str = None) -> Dict[str, Any]:
+        if branch_id is None:
+            # this takes the default branch
+            endpoint = f"/projects/{project_id}/commits"
+        else:
+            endpoint = f"/projects/{project_id}/commits?branchId={branch_id}"
+        #print (">>> DEBUG create_commit")
+        #print (endpoint)
+        #print (commit_data)
         return self._request(
             method="POST",
             endpoint=endpoint,
