@@ -38,15 +38,75 @@ def get_project_by_name(client: SysMLV2Client, name: str):
         print(f"Error getting projects: {e}")
         return None, None
 
-def commit_to_project(client: SysMLV2Client, proj_id:str, payload:str, commit_msg:str = "default commit message"):
-    commit1_data = {
-        "@type": "Commit",
-        "description": commit_msg,
-        "change": payload
-    }
+def delete_project_data (client: SysMLV2Client, proj_id:str, branch_id:str = None):
+    # Get the latest commit
+    commits = client.list_commits(proj_id)
+    if not commits:
+        return
+    latest = commits[0] if isinstance(commits, list) else commits
+    commit_id = latest.get("@id") or latest.get("id")
+    if not commit_id:
+        return
+
+    # Fetch elements for that commit
+    elements = client.list_elements(proj_id, commit_id)
+    print(f"_delete_project_data: Found {len(elements)} elements to delete")
+
+    if not elements:
+        return
+
+    # include elements in the change attribute which have an identity but no payload    
+    #     {
+    #         "@type": "Commit",
+    #         "description": "Commit 1: Create initial elements",
+    #         "change": [
+    #     {
+    #     "identity": {
+    #         "@id": "4b0d767c-318f-4160-8a5f-2a76a3c5a65a"
+    #     }
+    #     }
+    change_payload = [
+        {
+            "identity": {
+                "@id": elem["@id"]
+            }
+        }
+        for elem in elements
+        if "@id" in elem
+    ]
+    commit = {"@type": "Commit", "description": f"delete all elements", "change": change_payload}
+    print (commit)
 
     try:
-        commit1_response = client.create_commit(proj_id, commit1_data)
+        resp = client.create_commit(proj_id, commit, branch_id=branch_id)
+        commit1_id = resp.get('@id')
+        if not commit1_id:
+            print("\n*** WARNING: Could not extract commit ID ('@id') from response! ***")
+            return None, None
+        else:
+            return resp, commit1_id
+    except SysMLV2Error as e:
+        print(f"Error creating commit 1: {e}")
+        return None, None
+
+def commit_to_project(client: SysMLV2Client, proj_id:str, payload:str, commit_msg:str = "default commit message", user_commit_data=None, delete_project_data:bool = False, branch_id=None):
+    if user_commit_data is None:
+        commit1_data = {
+            "@type": "Commit",
+            "description": commit_msg,
+            "change": payload
+        }
+    else:
+        commit1_data = user_commit_data
+
+    if delete_project_data:
+        resp, commit_del_id = delete_project_data (client, proj_id, branch_id=branch_id)
+        if not commit_del_id:
+            print("\n*** WARNING: Could not delete project data before commit ***")
+            return None, None
+
+    try:
+        commit1_response = client.create_commit(proj_id, commit1_data, branch_id=branch_id)
         commit1_id = commit1_response.get('@id')
         if not commit1_id:
             print("\n*** WARNING: Could not extract commit ID ('@id') from response! ***")
