@@ -18,7 +18,7 @@ jobs:
       id: setup-python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.12'
 
     - name: Cache pip dependencies
       uses: actions/cache@v3
@@ -37,11 +37,7 @@ jobs:
     - name: Run tests with coverage
       run: |
         mkdir -p test-results
-        pytest -v --tb=short \
-          --junitxml=test-results/results.xml \
-          --cov=src/sysmlv2_client \
-          --cov-report=xml:test-results/coverage.xml \
-          --cov-report=html:test-results/htmlcov
+        pytest -v --tb=short --junitxml=test-results/results.xml --cov=src/sysmlv2_client --cov-report=xml:test-results/coverage.xml --cov-report=html:test-results/htmlcov
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
