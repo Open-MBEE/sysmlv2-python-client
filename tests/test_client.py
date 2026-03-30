@@ -1,3 +1,5 @@
+import json
+
 import pytest
 import requests_mock
 import requests
@@ -93,6 +95,14 @@ def test_get_projects_success_no_elements_key(client, requests_mock):
 
     assert projects == mock_response_data 
 
+def test_get_projects_success_unexpected_scalar_response(client, monkeypatch):
+    """Tests retrieving projects when the API returns a scalar value."""
+    monkeypatch.setattr(client, "_request", lambda **kwargs: "unexpected")
+
+    projects = client.get_projects()
+
+    assert projects == []
+
 def test_get_projects_auth_error(client, requests_mock):
     """Tests authentication error during get_projects."""
     mock_url = f"{TEST_BASE_URL}/projects"
@@ -165,6 +175,17 @@ def test_create_project_api_error(client, requests_mock):
     with pytest.raises(SysMLV2APIError, match="Unexpected status code for POST /projects"):
         client.create_project(request_data)
 
+def test_delete_project_success(client, requests_mock):
+    """Tests successfully deleting a project."""
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}"
+    requests_mock.delete(mock_url, json={}, status_code=200)
+
+    result = client.delete_project(TEST_PROJECT_ID)
+
+    assert result == {}
+    assert requests_mock.last_request.url == mock_url
+    assert requests_mock.last_request.method == "DELETE"
+
 
 # --- Test Get Element ---
 
@@ -229,6 +250,24 @@ def test_get_owned_elements_empty(client, requests_mock):
 
     assert owned_elements == []
 
+def test_get_owned_elements_success_list_response(client, requests_mock):
+    """Tests retrieving owned elements when the API returns a bare list."""
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits/{TEST_COMMIT_ID}/elements/{TEST_ELEMENT_ID}/owned"
+    mock_response_data = [{"id": "owned_elem_1"}]
+    requests_mock.get(mock_url, json=mock_response_data, status_code=200)
+
+    owned_elements = client.get_owned_elements(TEST_PROJECT_ID, TEST_ELEMENT_ID, TEST_COMMIT_ID)
+
+    assert owned_elements == mock_response_data
+
+def test_get_owned_elements_success_unexpected_scalar_response(client, monkeypatch):
+    """Tests retrieving owned elements when the API returns a scalar value."""
+    monkeypatch.setattr(client, "_request", lambda **kwargs: "unexpected")
+
+    owned_elements = client.get_owned_elements(TEST_PROJECT_ID, TEST_ELEMENT_ID, TEST_COMMIT_ID)
+
+    assert owned_elements == []
+
 # --- Test Create Commit ---
 
 def test_create_commit_success(client, requests_mock):
@@ -239,6 +278,55 @@ def test_create_commit_success(client, requests_mock):
     requests_mock.post(mock_url, json=response_data, status_code=200) 
 
     created_commit = client.create_commit(TEST_PROJECT_ID, request_data)
+
+    assert created_commit == response_data
+    assert requests_mock.last_request.url == mock_url
+    assert requests_mock.last_request.method == "POST"
+    assert requests_mock.last_request.json() == request_data
+
+def test_create_commit_with_branch_id(client, requests_mock):
+    """Tests commit creation with a branch query parameter."""
+    branch_id = "branch_123"
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits?branchId={branch_id}"
+    request_data = {"message": "Branch commit", "parentCommitId": None}
+    response_data = {"id": "branch_commit_id", **request_data}
+    requests_mock.post(mock_url, json=response_data, status_code=200)
+
+    created_commit = client.create_commit(TEST_PROJECT_ID, request_data, branch_id=branch_id)
+
+    assert created_commit == response_data
+    assert requests_mock.last_request.url == mock_url
+    assert requests_mock.last_request.method == "POST"
+    assert requests_mock.last_request.json() == request_data
+
+def test_create_commit_with_replace(client, requests_mock):
+    """Tests commit creation with the replace query parameter."""
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits?replace=true"
+    request_data = {"message": "Replace commit", "parentCommitId": None}
+    response_data = {"id": "replace_commit_id", **request_data}
+    requests_mock.post(mock_url, json=response_data, status_code=200)
+
+    created_commit = client.create_commit(TEST_PROJECT_ID, request_data, replace=True)
+
+    assert created_commit == response_data
+    assert requests_mock.last_request.url == mock_url
+    assert requests_mock.last_request.method == "POST"
+    assert requests_mock.last_request.json() == request_data
+
+def test_create_commit_with_branch_id_and_replace(client, requests_mock):
+    """Tests commit creation with both branchId and replace query parameters."""
+    branch_id = "branch_123"
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits?replace=true&branchId={branch_id}"
+    request_data = {"message": "Replace branch commit", "parentCommitId": None}
+    response_data = {"id": "replace_branch_commit_id", **request_data}
+    requests_mock.post(mock_url, json=response_data, status_code=200)
+
+    created_commit = client.create_commit(
+        TEST_PROJECT_ID,
+        request_data,
+        branch_id=branch_id,
+        replace=True,
+    )
 
     assert created_commit == response_data
     assert requests_mock.last_request.url == mock_url
@@ -329,6 +417,14 @@ def test_list_commits_success_dict_response(client, requests_mock):
 
     assert commits == mock_response_data["elements"]
 
+def test_list_commits_success_unexpected_scalar_response(client, monkeypatch):
+    """Tests listing commits when the API returns a scalar value."""
+    monkeypatch.setattr(client, "_request", lambda **kwargs: "unexpected")
+
+    commits = client.list_commits(TEST_PROJECT_ID)
+
+    assert commits == []
+
 def test_list_commits_project_not_found(client, requests_mock):
     """Tests 404 when listing commits for a non-existent project."""
     mock_url = f"{TEST_BASE_URL}/projects/invalid_project/commits"
@@ -348,6 +444,18 @@ def test_list_branches_success(client, requests_mock):
     requests_mock.get(mock_url, json=mock_response, status_code=200)
     branches = client.list_branches(TEST_PROJECT_ID)
     assert branches == mock_response
+
+def test_list_branches_success_dict_response(client, requests_mock):
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/branches"
+    mock_response = {"elements": [{"id": TEST_BRANCH_ID, "name": "develop"}]}
+    requests_mock.get(mock_url, json=mock_response, status_code=200)
+    branches = client.list_branches(TEST_PROJECT_ID)
+    assert branches == mock_response["elements"]
+
+def test_list_branches_success_unexpected_scalar_response(client, monkeypatch):
+    monkeypatch.setattr(client, "_request", lambda **kwargs: "unexpected")
+    branches = client.list_branches(TEST_PROJECT_ID)
+    assert branches == []
 
 def test_create_branch_success(client, requests_mock):
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/branches"
@@ -388,6 +496,18 @@ def test_list_tags_success(client, requests_mock):
     requests_mock.get(mock_url, json=mock_response, status_code=200)
     tags = client.list_tags(TEST_PROJECT_ID)
     assert tags == mock_response
+
+def test_list_tags_success_dict_response(client, requests_mock):
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/tags"
+    mock_response = {"elements": [{"id": TEST_TAG_ID, "name": "v1.0"}]}
+    requests_mock.get(mock_url, json=mock_response, status_code=200)
+    tags = client.list_tags(TEST_PROJECT_ID)
+    assert tags == mock_response["elements"]
+
+def test_list_tags_success_unexpected_scalar_response(client, monkeypatch):
+    monkeypatch.setattr(client, "_request", lambda **kwargs: "unexpected")
+    tags = client.list_tags(TEST_PROJECT_ID)
+    assert tags == []
 
 def test_create_tag_success(client, requests_mock):
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/tags"
@@ -435,6 +555,20 @@ def test_list_elements_commit_not_found(client, requests_mock):
     with pytest.raises(SysMLV2NotFoundError):
         client.list_elements(TEST_PROJECT_ID, "invalid_commit")
 
+def test_list_elements_success_dict_response(client, requests_mock):
+    """Tests listing elements when the API returns a dict with 'elements'."""
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits/{TEST_COMMIT_ID}/elements"
+    mock_response_data = {"elements": [{"id": "elem1"}, {"id": "elem2"}]}
+    requests_mock.get(mock_url, json=mock_response_data, status_code=200)
+    elements = client.list_elements(TEST_PROJECT_ID, TEST_COMMIT_ID)
+    assert elements == mock_response_data["elements"]
+
+def test_list_elements_success_unexpected_scalar_response(client, monkeypatch):
+    """Tests listing elements when the API returns a scalar value."""
+    monkeypatch.setattr(client, "_request", lambda **kwargs: "unexpected")
+    elements = client.list_elements(TEST_PROJECT_ID, TEST_COMMIT_ID)
+    assert elements == []
+
 
 # --- Test List Relationships ---
 
@@ -461,3 +595,62 @@ def test_list_relationships_element_not_found(client, requests_mock):
     requests_mock.get(mock_url, status_code=404)
     with pytest.raises(SysMLV2NotFoundError):
         client.list_relationships(TEST_PROJECT_ID, "invalid_element", TEST_COMMIT_ID)
+
+def test_list_relationships_success_dict_response(client, requests_mock):
+    """Tests listing relationships when the API returns a dict with 'elements'."""
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits/{TEST_COMMIT_ID}/elements/{TEST_ELEMENT_ID}/relationships?direction=both"
+    mock_response_data = {"elements": [{"id": "rel1"}]}
+    requests_mock.get(mock_url, json=mock_response_data, status_code=200)
+    relationships = client.list_relationships(TEST_PROJECT_ID, TEST_ELEMENT_ID, TEST_COMMIT_ID)
+    assert relationships == mock_response_data["elements"]
+
+def test_list_relationships_success_unexpected_scalar_response(client, monkeypatch):
+    """Tests listing relationships when the API returns a scalar value."""
+    monkeypatch.setattr(client, "_request", lambda **kwargs: "unexpected")
+    relationships = client.list_relationships(TEST_PROJECT_ID, TEST_ELEMENT_ID, TEST_COMMIT_ID)
+    assert relationships == []
+
+
+# --- Test _request Edge Cases ---
+
+def test_request_bad_request_uses_text_when_json_decode_fails(client, monkeypatch):
+    """Tests 400 handling falls back to response text when JSON decoding fails."""
+
+    class FakeResponse:
+        status_code = 400
+        text = "plain error text"
+        content = b"plain error text"
+
+        def json(self):
+            raise json.JSONDecodeError("Expecting value", "plain error text", 0)
+
+    monkeypatch.setattr(client._session, "request", lambda **kwargs: FakeResponse())
+
+    with pytest.raises(SysMLV2BadRequestError, match="plain error text"):
+        client._request(method="GET", endpoint="/projects")
+
+def test_request_network_error_wrapped(client, monkeypatch):
+    """Tests request-layer network exceptions are wrapped in SysMLV2Error."""
+    def raise_request_exception(**kwargs):
+        raise requests.exceptions.ConnectionError("connection dropped")
+
+    monkeypatch.setattr(client._session, "request", raise_request_exception)
+
+    with pytest.raises(SysMLV2Error, match="Network error during request"):
+        client._request(method="GET", endpoint="/projects")
+
+def test_request_success_json_decode_error_wrapped(client, monkeypatch):
+    """Tests invalid JSON on a successful response is wrapped in SysMLV2Error."""
+
+    class FakeResponse:
+        status_code = 200
+        text = "not json"
+        content = b"not json"
+
+        def json(self):
+            raise json.JSONDecodeError("Expecting value", "not json", 0)
+
+    monkeypatch.setattr(client._session, "request", lambda **kwargs: FakeResponse())
+
+    with pytest.raises(SysMLV2Error, match="Failed to decode JSON response"):
+        client._request(method="GET", endpoint="/projects")

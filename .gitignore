@@ -25,3 +25,4 @@ flexo-setup/docker-compose/env/*.env
 /build
 /src/sysmlv2_python_client.egg-info
 /test-results
+coverage.xml
