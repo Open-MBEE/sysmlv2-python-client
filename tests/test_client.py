@@ -245,6 +245,55 @@ def test_create_commit_success(client, requests_mock):
     assert requests_mock.last_request.method == "POST"
     assert requests_mock.last_request.json() == request_data
 
+def test_create_commit_with_branch_id(client, requests_mock):
+    """Tests commit creation with a branch query parameter."""
+    branch_id = "branch_123"
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits?branchId={branch_id}"
+    request_data = {"message": "Branch commit", "parentCommitId": None}
+    response_data = {"id": "branch_commit_id", **request_data}
+    requests_mock.post(mock_url, json=response_data, status_code=200)
+
+    created_commit = client.create_commit(TEST_PROJECT_ID, request_data, branch_id=branch_id)
+
+    assert created_commit == response_data
+    assert requests_mock.last_request.url == mock_url
+    assert requests_mock.last_request.method == "POST"
+    assert requests_mock.last_request.json() == request_data
+
+def test_create_commit_with_replace(client, requests_mock):
+    """Tests commit creation with the replace query parameter."""
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits?replace=true"
+    request_data = {"message": "Replace commit", "parentCommitId": None}
+    response_data = {"id": "replace_commit_id", **request_data}
+    requests_mock.post(mock_url, json=response_data, status_code=200)
+
+    created_commit = client.create_commit(TEST_PROJECT_ID, request_data, replace=True)
+
+    assert created_commit == response_data
+    assert requests_mock.last_request.url == mock_url
+    assert requests_mock.last_request.method == "POST"
+    assert requests_mock.last_request.json() == request_data
+
+def test_create_commit_with_branch_id_and_replace(client, requests_mock):
+    """Tests commit creation with both branchId and replace query parameters."""
+    branch_id = "branch_123"
+    mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits?replace=true&branchId={branch_id}"
+    request_data = {"message": "Replace branch commit", "parentCommitId": None}
+    response_data = {"id": "replace_branch_commit_id", **request_data}
+    requests_mock.post(mock_url, json=response_data, status_code=200)
+
+    created_commit = client.create_commit(
+        TEST_PROJECT_ID,
+        request_data,
+        branch_id=branch_id,
+        replace=True,
+    )
+
+    assert created_commit == response_data
+    assert requests_mock.last_request.url == mock_url
+    assert requests_mock.last_request.method == "POST"
+    assert requests_mock.last_request.json() == request_data
+
 def test_create_commit_bad_request(client, requests_mock):
     """Tests 400 Bad Request during commit creation."""
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits"

@@ -126,21 +126,30 @@ class SysMLV2Client:
         else:
             return []
 
-    def create_commit(self, project_id: str, commit_data: Dict[str, Any], branch_id:str = None) -> Dict[str, Any]:
-        if branch_id is None:
-            # this takes the default branch
-            endpoint = f"/projects/{project_id}/commits"
-        else:
-            endpoint = f"/projects/{project_id}/commits?branchId={branch_id}"
+    def create_commit(self, project_id: str, commit_data: Dict[str, Any], branch_id:str = None, replace:bool = False) -> Dict[str, Any]:
+        params = []
+
+        if replace:
+            params.append("replace=true")
+
+        if branch_id is not None:
+            params.append(f"branchId={branch_id}")
+
+        endpoint = f"/projects/{project_id}/commits"
+        if params:
+            endpoint += "?" + "&".join(params)
+
         #print (">>> DEBUG create_commit")
         #print (endpoint)
         #print (commit_data)
+
         return self._request(
             method="POST",
             endpoint=endpoint,
             data=commit_data,
             expected_status=200 
         )
+    
     def get_commit_by_id(self, project_id: str, commit_id: str) -> Dict[str, Any]:
         endpoint = f"/projects/{project_id}/commits/{commit_id}"
         return self._request(method="GET", endpoint=endpoint, expected_status=200)
