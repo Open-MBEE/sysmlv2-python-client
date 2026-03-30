@@ -44,6 +44,10 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=src/sysmlv2_client --cov-report=xml:coverage.xml
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         with:
@@ -52,9 +56,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_SCANNER_SKIP_JRE_PROVISIONING: "true"
-
-      - name: Run tests with coverage
-        run: |
-          coverage run -m pytest
-          coverage xml -o coverage.xml
 
