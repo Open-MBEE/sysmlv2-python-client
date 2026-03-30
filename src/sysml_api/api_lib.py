@@ -148,7 +148,7 @@ def delete_project_data(client: SysMLV2Client, proj_id: str, branch_id: str = No
 #         print(f"Error creating commit 1: {e}")
 #         return None, None
 
-def commit_to_project(client: SysMLV2Client, proj_id:str, payload:str, commit_msg:str = "default commit message", user_commit_data=None, delete_project_data:bool = False, branch_id=None):
+def commit_to_project(client: SysMLV2Client, proj_id:str, payload:str, commit_msg:str = "default commit message", user_commit_data=None, delete_project_data:bool = False, branch_id=None,  replace_model:bool = False):
     if user_commit_data is None:
         commit1_data = {
             "@type": "Commit",
@@ -165,7 +165,7 @@ def commit_to_project(client: SysMLV2Client, proj_id:str, payload:str, commit_ms
             return None, None
 
     try:
-        commit1_response = client.create_commit(proj_id, commit1_data, branch_id=branch_id)
+        commit1_response = client.create_commit(proj_id, commit1_data, branch_id=branch_id, replace=replace_model)
         commit1_id = commit1_response.get('@id')
         if not commit1_id:
             print("\n*** WARNING: Could not extract commit ID ('@id') from response! ***")
