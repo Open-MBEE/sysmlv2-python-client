@@ -139,8 +139,8 @@ class SysMLV2Client:
         if params:
             endpoint += "?" + "&".join(params)
 
-        #print (">>> DEBUG create_commit")
-        #print (endpoint)
+        print (">>> SysMLv2_Python_Client::DEBUG create_commit")
+        print (endpoint)
         #print (commit_data)
 
         return self._request(
