@@ -16,16 +16,7 @@ A basic Python client library for interacting with a SysML v2 API server, specif
 
 ## Setup
 ### 1. Run Flexo SysMLv2 Service Locally
-This client is designed to work with a running instance of the OpenMBEE Flexo SysMLv2 service.
-
-*   **Prerequisites:** Docker and Docker Compose installed.
-*   **Get Setup Files:** The necessary `docker-compose.yml` and configuration files are located in the `flexo-setup/docker-compose/` directory within this project (downloaded from `Open-MBEE/flexo-mms-sysmlv2`).
-*   **Start Services:** Navigate to the `flexo-setup/docker-compose/` directory in your terminal and run:
-    ```bash
-    docker compose up -d
-    ```
-*   **Initial Org Setup (Potential Manual Step):** For a fresh database, you may need to perform an initial organization setup using Postman as described in `flexo-setup/docker-compose/README.md`.
-*   **Authentication Token:** The required Bearer token for the client is found in `flexo-setup/docker-compose/env/flexo-sysmlv2.env` under the `FLEXO_AUTH` variable. Copy this entire value (including `Bearer `).
+Follow instructions [here](https://github.com/Open-MBEE/flexo-mms-sysmlv2.git)
 
 ### 2. Install Client (Development)
 
