@@ -5,6 +5,7 @@ __pycache__/
 # Virtual Environments
 venv/
 .venv/
+.venv-wheel/
 env/
 
 # Jupyter Notebook Checkpoints
@@ -23,7 +24,8 @@ env/
 # Flexo Setup Sensitive Files
 flexo-setup/docker-compose/env/*.env
 /build
-/src/sysmlv2_python_client.egg-info
+/dist/
+*.egg-info/
 /test-results
 coverage.xml
 /.venv-wheel

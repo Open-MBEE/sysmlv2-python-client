@@ -4,7 +4,7 @@ import pytest
 import requests_mock
 import requests
 
-from src.sysmlv2_client import (
+from sysmlv2_client import (
     SysMLV2Client,
     SysMLV2Error,
     SysMLV2AuthError,
