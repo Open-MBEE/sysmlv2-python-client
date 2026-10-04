@@ -1,4 +1,3 @@
-import numpy as np
 from sysmlv2_client import SysMLV2Client, SysMLV2Error, SysMLV2NotFoundError
 from typing import Any, Dict
 

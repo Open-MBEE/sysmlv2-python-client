@@ -1,47 +1,28 @@
-name: Test sysmlv2-python-client
-
+name: Test sysml-api-client
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
-
+    branches: [main, develop]
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Python
-      id: setup-python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-
-    - name: Cache pip dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -e .
-        pip install pytest pytest-cov requests-mock
-
-    - name: Run tests with coverage
-      run: |
-        mkdir -p test-results
-        pytest -v --tb=short --junitxml=test-results/results.xml --cov=src/sysmlv2_client --cov-report=xml:test-results/coverage.xml --cov-report=html:test-results/htmlcov
-
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results-sysmlv2-python-client
-        path: test-results/
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -e ".[test]"
+      - run: python -m pytest -v --tb=short --junitxml=test-results/results.xml --cov=sysmlv2_client --cov-report=xml:test-results/coverage.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.python-version }}
+          path: test-results/
+  package:
+    uses: ./.github/workflows/package.yml
