@@ -1,6 +1,20 @@
-# SysML v2 Python Client
+# sysml-api-client
 
-A basic Python client library for interacting with a SysML v2 API server, specifically tested against the OpenMBEE Flexo implementation.
+A Python client for the [OMG Systems Modeling API and Services](https://www.omg.org/spec/SystemsModelingAPI), specifically tested against the OpenMBEE Flexo implementation. The PyPI name is `sysml-api-client`; Python imports remain `sysmlv2_client` and `sysml_api`.
+
+## Installation
+
+Requires Python 3.10 or newer. Once published on PyPI:
+
+```bash
+python -m pip install sysml-api-client
+```
+
+```python
+from sysmlv2_client import SysMLV2Client
+```
+
+See [RELEASING.md](RELEASING.md) for build validation and publisher setup.
 
 ## Features
 
@@ -19,7 +33,7 @@ A basic Python client library for interacting with a SysML v2 API server, specif
 This client is designed to work with a running instance of the OpenMBEE Flexo SysMLv2 service.
 
 *   **Prerequisites:** Docker and Docker Compose installed.
-*   **Get Setup Files:** The necessary `docker-compose.yml` and configuration files are located in the `flexo-setup/docker-compose/` directory within this project (downloaded from `Open-MBEE/flexo-mms-sysmlv2`).
+*   **Get Setup Files:** Obtain the Docker Compose setup from [Open-MBEE/flexo-mms-sysmlv2](https://github.com/Open-MBEE/flexo-mms-sysmlv2). The paths below assume you have copied it into `flexo-setup/` locally; it is not included in this package.
 *   **Start Services:** Navigate to the `flexo-setup/docker-compose/` directory in your terminal and run:
     ```bash
     docker compose up -d
@@ -29,13 +43,8 @@ This client is designed to work with a running instance of the OpenMBEE Flexo Sy
 
 ### 2. Install Client (Development)
 
-```python
-# Example: Add src to path if running scripts/notebooks from project root
-import sys
-import os
-sys.path.insert(0, os.path.abspath('./src'))
-
-from sysmlv2_client import SysMLV2Client
+```bash
+python -m pip install -e ".[test]"
 ```
 
 ## Basic Usage
@@ -104,7 +113,6 @@ except Exception as e:
 
 ```
 
-See the [examples/basic_usage.ipynb](examples/basic_usage.ipynb) Jupyter Notebook for more detailed examples covering commits, branches, tags, and element retrieval/modification via commits.
 
 ## Running Tests
 
@@ -112,7 +120,7 @@ Unit tests are implemented using `pytest` and `requests-mock`.
 
 1.  **Install Dependencies:**
     ```bash
-    pip install pytest requests requests-mock
+    python -m pip install -e ".[test]"
     ```
 2.  **Run Tests:** Navigate to the project root directory in your terminal and run:
     ```bash
