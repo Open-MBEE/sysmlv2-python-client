@@ -29,5 +29,5 @@ flexo-setup/docker-compose/env/*.env
 /test-results
 coverage.xml
 /.venv-wheel
-/src/sysml_api_client.egg-info
 /dist
+/src/sysml_api_client.egg-info

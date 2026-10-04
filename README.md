@@ -30,16 +30,7 @@ See [RELEASING.md](RELEASING.md) for build validation and publisher setup.
 
 ## Setup
 ### 1. Run Flexo SysMLv2 Service Locally
-This client is designed to work with a running instance of the OpenMBEE Flexo SysMLv2 service.
-
-*   **Prerequisites:** Docker and Docker Compose installed.
-*   **Get Setup Files:** Obtain the Docker Compose setup from [Open-MBEE/flexo-mms-sysmlv2](https://github.com/Open-MBEE/flexo-mms-sysmlv2). The paths below assume you have copied it into `flexo-setup/` locally; it is not included in this package.
-*   **Start Services:** Navigate to the `flexo-setup/docker-compose/` directory in your terminal and run:
-    ```bash
-    docker compose up -d
-    ```
-*   **Initial Org Setup (Potential Manual Step):** For a fresh database, you may need to perform an initial organization setup using Postman as described in `flexo-setup/docker-compose/README.md`.
-*   **Authentication Token:** The required Bearer token for the client is found in `flexo-setup/docker-compose/env/flexo-sysmlv2.env` under the `FLEXO_AUTH` variable. Copy this entire value (including `Bearer `).
+Follow instructions [here](https://github.com/Open-MBEE/flexo-mms-sysmlv2.git)
 
 ### 2. Install Client (Development)
 
