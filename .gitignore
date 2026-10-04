@@ -31,3 +31,4 @@ coverage.xml
 /.venv-wheel
 /dist
 /src/sysml_api_client.egg-info
+/.venv-release-test
