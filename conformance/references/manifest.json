@@ -1,0 +1,17 @@
+{
+  "OpenAPI.json": {
+    "omg_file_id": "ad/23-02-24",
+    "url": "https://www.omg.org/spec/SystemsModelingAPI/20230201/OpenAPI.json",
+    "sha256": "58dd0d0e2ea8c09b541981f7cf381a1e98f93d99a18a31286181173855706df1"
+  },
+  "Schemas.json": {
+    "omg_file_id": "ad/23-02-25",
+    "url": "https://www.omg.org/spec/SystemsModelingAPI/20230201/Schemas.json",
+    "sha256": "01ef61746f3bdf7bb88e58dfb1a3c1a96b294995e352ec960f2ce16f6bae6ea9"
+  },
+  "SystemsModelingAPI-Beta1.pdf": {
+    "omg_file_id": "ptc/23-06-04",
+    "url": "https://www.omg.org/spec/SystemsModelingAPI/1.0/Beta1/PDF",
+    "sha256": "3f18558c52643738bf57971352d3ea6b21bb85bc2f7a6c50a188089b3f026cc2"
+  }
+}

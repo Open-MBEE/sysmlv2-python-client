@@ -118,6 +118,8 @@ Unit tests are implemented using `pytest` and `requests-mock`.
     pytest
     ```
 
+The [OMG Beta 1 REST/HTTP conformance suite](conformance/README.md) includes live provider tests, a Python client interoperability test, and traceability matrices.
+
 ## API
 ### Basic v2 API
 * get_projects
