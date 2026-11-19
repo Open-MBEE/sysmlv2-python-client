@@ -25,6 +25,7 @@ jobs:
         env:
           SYSML_CONFORMANCE_URL: ${{ vars.SYSML_CONFORMANCE_URL }}
           SYSML_CONFORMANCE_TOKEN: ${{ secrets.SYSML_CONFORMANCE_TOKEN }}
+          SYSML_CONFORMANCE_SVC_TOKEN: ${{ secrets.SYSML_CONFORMANCE_SVC_TOKEN }}
           PROVIDER_BUILD: ${{ inputs.provider_build }}
       - uses: actions/upload-artifact@v4
         if: always()

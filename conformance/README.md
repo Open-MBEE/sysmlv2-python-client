@@ -18,6 +18,8 @@ python -m pytest -c conformance/pytest.ini conformance -m "live and not interope
 python -m pytest -c conformance/pytest.ini conformance -m interoperability --live --provider-build "provider name and deployed revision" --junitxml=conformance/results/client.xml
 ```
 
+For the Flexo gateway, set `SYSML_CONFORMANCE_SVC_TOKEN` to the opaque token sent in the `X-SysMLv2-Svc-Token` header. Set both credential variables if the deployment requires both headers. For GitHub Actions, use a secret with the same name.
+
 Use `-k PIM-PS` for the Annex A.1 slice or select the pytest nodes in the matrices. Some scenarios use other services to create their fixtures. A blocked fixture provides no result for the operation it was meant to exercise. Raw HTTP evidence in JUnit records operation IDs and statuses. Result files are ignored by Git.
 
 For manual CI runs, configure the `sysml-conformance` GitHub environment with the URL variable and optional token secret named above, then dispatch **OMG Beta 1 REST conformance** with the provider revision. The workflow uploads JUnit results even when tests fail.
