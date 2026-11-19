@@ -1,0 +1,100 @@
+section,case_id,operation_id,pytest_node,coverage,notes
+A.1,PIM-PS-001,postProject,test_annex.py::test_project_service[PIM-PS-001],executable,
+A.1,PIM-PS-001,getProjectById,test_annex.py::test_project_service[PIM-PS-001],executable,
+A.1,PIM-PS-001,getBranchesByProjectAndId,test_annex.py::test_project_service[PIM-PS-001],executable,
+A.1,PIM-PS-002,getProjects,test_annex.py::test_project_service[PIM-PS-002],executable,
+A.1,PIM-PS-003,getProjectById,test_annex.py::test_project_service[PIM-PS-003],executable,
+A.1,PIM-PS-004,getProjectById,test_annex.py::test_project_service[PIM-PS-004],executable,
+A.2,PIM-EN-001,getElementsByProjectCommit,test_annex.py::test_element_navigation[PIM-EN-001],executable,
+A.2,PIM-EN-002,getElementByProjectCommitId,test_annex.py::test_element_navigation[PIM-EN-002],executable,
+A.2,PIM-EN-003,getElementByProjectCommitId,test_annex.py::test_element_navigation[PIM-EN-003],executable,
+A.2,PIM-EN-004,getRelationshipsByProjectCommitRelatedElement,test_annex.py::test_element_navigation[PIM-EN-004],executable,
+A.2,PIM-EN-005,getRelationshipsByProjectCommitRelatedElement,test_annex.py::test_element_navigation[PIM-EN-005],executable,
+A.3,PIM-PCB-001,postBranchByProject,test_annex.py::test_versioning[PIM-PCB-001],executable,
+A.3,PIM-PCB-002,getBranchesByProject,test_annex.py::test_versioning[PIM-PCB-002],executable,
+A.3,PIM-PCB-003,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-003],executable,
+A.3,PIM-PCB-004,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-004],executable,
+A.3,PIM-PCB-005,deleteBranchByProjectAndId,test_annex.py::test_versioning[PIM-PCB-005],executable,
+A.3,PIM-PCB-005,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-005],executable,
+A.3,PIM-PCB-006,deleteBranchByProjectAndId,test_annex.py::test_versioning[PIM-PCB-006],executable,
+A.3,PIM-PCB-007,getProjectById,test_annex.py::test_versioning[PIM-PCB-007],executable,
+A.3,PIM-PCB-007,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-007],executable,
+A.3,PIM-PCB-008,putProjectById,test_annex.py::test_versioning[PIM-PCB-008],executable,
+A.3,PIM-PCB-008,getProjectById,test_annex.py::test_versioning[PIM-PCB-008],executable,
+A.3,PIM-PCB-008,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-008],executable,
+A.3,PIM-PCB-009,putProjectById,test_annex.py::test_versioning[PIM-PCB-009],executable,
+A.3,PIM-PCB-009,getProjectById,test_annex.py::test_versioning[PIM-PCB-009],executable,
+A.3,PIM-PCB-010,postCommitByProject,test_annex.py::test_versioning[PIM-PCB-010],partial,Exercises default branch and one prior head; see REST binding limits for explicit predecessors.
+A.3,PIM-PCB-010,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-010],partial,Exercises default branch and one prior head; see REST binding limits for explicit predecessors.
+A.3,PIM-PCB-010,getElementByProjectCommitId,test_annex.py::test_versioning[PIM-PCB-010],partial,Exercises default branch and one prior head; see REST binding limits for explicit predecessors.
+A.3,PIM-PCB-011,getCommitByProjectAndId,test_annex.py::test_versioning[PIM-PCB-011],executable,
+A.3,PIM-PCB-012,getCommitByProjectAndId,test_annex.py::test_versioning[PIM-PCB-012],executable,
+A.3,PIM-PCB-013,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-013],executable,
+A.3,PIM-PCB-013,getCommitByProjectAndId,test_annex.py::test_versioning[PIM-PCB-013],executable,
+A.3,PIM-PCB-014,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-014],executable,
+A.3,PIM-PCB-015,getBranchesByProjectAndId,test_annex.py::test_versioning[PIM-PCB-015],executable,
+A.4,PIM-QS-001,postQueryByProject,test_annex.py::test_queries[PIM-QS-001],partial,QueryRequest exposes select and where; scope and orderBy have no REST fields.
+A.4,PIM-QS-001,getQueryByProjectAndId,test_annex.py::test_queries[PIM-QS-001],partial,QueryRequest exposes select and where; scope and orderBy have no REST fields.
+A.4,PIM-QS-002,postQueryByProject,test_annex.py::test_queries[PIM-QS-002],partial,Uses a saved query with two predicates; query scope is absent from the REST schema.
+A.4,PIM-QS-002,getQueryResultsByProjectIdQueryId,test_annex.py::test_queries[PIM-QS-002],partial,Uses a saved query with two predicates; query scope is absent from the REST schema.
+A.5,PIM-ER-001,postQueryByProject,test_annex.py::test_external_relationship[PIM-ER-001],executable,
+A.5,PIM-ER-001,getQueryResultsByProjectIdQueryId,test_annex.py::test_external_relationship[PIM-ER-001],executable,
+A.5,PIM-ER-002,postQueryByProject,test_annex.py::test_external_relationship[PIM-ER-002],executable,
+A.5,PIM-ER-002,getQueryResultsByProjectIdQueryId,test_annex.py::test_external_relationship[PIM-ER-002],executable,
+A.5,PIM-ER-003,postQueryByProject,test_annex.py::test_external_relationship[PIM-ER-003],partial,Query binding represents missing identity as an empty result; no item-level 404.
+A.5,PIM-ER-003,getQueryResultsByProjectIdQueryId,test_annex.py::test_external_relationship[PIM-ER-003],partial,Query binding represents missing identity as an empty result; no item-level 404.
+A.6,PIM-PU-001,postQueryByProject,test_annex.py::test_project_usage,executable,
+A.6,PIM-PU-001,getQueryResultsByProjectIdQueryId,test_annex.py::test_project_usage,executable,
+A.7,PIM-CC-001,getElementsByProjectCommit,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getElementsByProjectCommit],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getElementByProjectCommitId,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getElementByProjectCommitId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getRelationshipsByProjectCommitRelatedElement:out],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getRelationshipsByProjectCommitRelatedElement:in],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,postBranchByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-postBranchByProject],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getBranchesByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getBranchesByProject],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getBranchesByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getBranchesByProjectAndId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,deleteBranchByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-deleteBranchByProjectAndId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getProjectById,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getProjectById:default-branch],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,putProjectById,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-putProjectById],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,postCommitByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-postCommitByProject],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getCommitByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getCommitByProjectAndId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,getBranchesByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-getBranchesByProjectAndId:head],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-001,postQueryByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-001-postQueryByProject],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-002,getElementsByProjectCommit,test_cross_cutting.py::test_cross_cutting[PIM-CC-002-getElementsByProjectCommit],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-002,getElementByProjectCommitId,test_cross_cutting.py::test_cross_cutting[PIM-CC-002-getElementByProjectCommitId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-002,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-002-getRelationshipsByProjectCommitRelatedElement:out],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-002,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-002-getRelationshipsByProjectCommitRelatedElement:in],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-002,postBranchByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-002-postBranchByProject],executable,
+A.7,PIM-CC-003,getElementsByProjectCommit,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getElementsByProjectCommit],executable,
+A.7,PIM-CC-003,getElementByProjectCommitId,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getElementByProjectCommitId],executable,
+A.7,PIM-CC-003,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getRelationshipsByProjectCommitRelatedElement:out],executable,
+A.7,PIM-CC-003,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getRelationshipsByProjectCommitRelatedElement:in],executable,
+A.7,PIM-CC-003,postBranchByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-postBranchByProject],executable,
+A.7,PIM-CC-003,getBranchesByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getBranchesByProject],executable,
+A.7,PIM-CC-003,getBranchesByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getBranchesByProjectAndId],executable,
+A.7,PIM-CC-003,deleteBranchByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-deleteBranchByProjectAndId],executable,
+A.7,PIM-CC-003,getProjectById,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getProjectById:default-branch],executable,
+A.7,PIM-CC-003,putProjectById,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-putProjectById],executable,
+A.7,PIM-CC-003,postCommitByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-postCommitByProject],executable,
+A.7,PIM-CC-003,getCommitByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getCommitByProjectAndId],executable,
+A.7,PIM-CC-003,getBranchesByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-getBranchesByProjectAndId:head],executable,
+A.7,PIM-CC-003,postQueryByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-003-postQueryByProject],executable,
+A.7,PIM-CC-004,getElementsByProjectCommit,test_cross_cutting.py::test_cross_cutting[PIM-CC-004-getElementsByProjectCommit],executable,
+A.7,PIM-CC-004,getElementByProjectCommitId,test_cross_cutting.py::test_cross_cutting[PIM-CC-004-getElementByProjectCommitId],executable,
+A.7,PIM-CC-004,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-004-getRelationshipsByProjectCommitRelatedElement:out],executable,
+A.7,PIM-CC-004,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-004-getRelationshipsByProjectCommitRelatedElement:in],executable,
+A.7,PIM-CC-004,postBranchByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-004-postBranchByProject],executable,
+A.7,PIM-CC-005,getElementsByProjectCommit,test_cross_cutting.py::test_cross_cutting[PIM-CC-005-getElementsByProjectCommit],executable,
+A.7,PIM-CC-005,getElementByProjectCommitId,test_cross_cutting.py::test_cross_cutting[PIM-CC-005-getElementByProjectCommitId],executable,
+A.7,PIM-CC-005,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-005-getRelationshipsByProjectCommitRelatedElement:out],executable,
+A.7,PIM-CC-005,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-005-getRelationshipsByProjectCommitRelatedElement:in],executable,
+A.7,PIM-CC-005,postBranchByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-005-postBranchByProject],executable,
+A.7,PIM-CC-006,postProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-006-postProject],executable,
+A.7,PIM-CC-006,postBranchByProject,test_cross_cutting.py::test_cross_cutting[PIM-CC-006-postBranchByProject],executable,
+A.7,PIM-CC-007,getProjectById,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-getProjectById],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-007,getElementByProjectCommitId,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-getElementByProjectCommitId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-007,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-getRelationshipsByProjectCommitRelatedElement:out],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-007,getRelationshipsByProjectCommitRelatedElement,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-getRelationshipsByProjectCommitRelatedElement:in],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-007,getBranchesByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-getBranchesByProjectAndId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-007,deleteBranchByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-deleteBranchByProjectAndId],blocked,Missing mandatory path segment has no distinct REST operation.
+A.7,PIM-CC-007,putProjectById,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-putProjectById],blocked,ProjectRequest.defaultBranch is optional.
+A.7,PIM-CC-007,getCommitByProjectAndId,test_cross_cutting.py::test_cross_cutting[PIM-CC-007-getCommitByProjectAndId],blocked,Missing mandatory path segment has no distinct REST operation.

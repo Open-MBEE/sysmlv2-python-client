@@ -1,0 +1,33 @@
+name: OMG Beta 1 REST conformance
+on:
+  workflow_dispatch:
+    inputs:
+      provider_build:
+        description: Provider name and deployed revision
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    environment: sysml-conformance
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e . -r conformance/requirements.txt
+      - run: python -m pytest -c conformance/pytest.ini conformance -m "not live"
+      - run: |
+          python -m pytest -c conformance/pytest.ini conformance -m live --live \
+            --provider-build "$PROVIDER_BUILD" --junitxml=conformance/results/provider.xml
+        env:
+          SYSML_CONFORMANCE_URL: ${{ vars.SYSML_CONFORMANCE_URL }}
+          SYSML_CONFORMANCE_TOKEN: ${{ secrets.SYSML_CONFORMANCE_TOKEN }}
+          PROVIDER_BUILD: ${{ inputs.provider_build }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: omg-beta1-conformance
+          path: conformance/results/

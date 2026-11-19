@@ -21,6 +21,9 @@ Specification = "https://www.omg.org/spec/SystemsModelingAPI"
 [project.optional-dependencies]
 test = ["pytest>=7", "pytest-cov>=4", "requests-mock>=1.11"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["sysmlv2_client*", "sysml_api*"]
