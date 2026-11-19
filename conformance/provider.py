@@ -99,7 +99,7 @@ def validate(schema, payload, label):
 
 
 class Provider:
-    def __init__(self, base_url, token):
+    def __init__(self, base_url, token, *, svc_token=None):
         self.url = base_url.rstrip("/")
         parts = urlsplit(self.url)
         if parts.scheme not in ("http", "https") or not parts.hostname or (
@@ -117,6 +117,8 @@ class Provider:
             raise ValueError("Set one raw JWT or one Bearer token")
         if credential:
             self.session.headers["Authorization"] = "Bearer " + credential[0]
+        if svc_token:
+            self.session.headers["X-SysMLv2-Svc-Token"] = svc_token
         self.projects = []
         self.evidence = []
 

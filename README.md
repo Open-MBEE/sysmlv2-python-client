@@ -120,6 +120,18 @@ Unit tests are implemented using `pytest` and `requests-mock`.
 
 The [OMG Beta 1 REST/HTTP conformance suite](conformance/README.md) includes live provider tests, a Python client interoperability test, and traceability matrices.
 
+For a Flexo gateway that requires `X-SysMLv2-Svc-Token`, pass the token through the `svc_token` keyword:
+
+```python
+import os
+
+from sysmlv2_client import SysMLV2Client
+
+client = SysMLV2Client("http://127.0.0.1:62859", svc_token=os.environ["SYSML_SVC_TOKEN"])
+```
+
+If your deployment also requires Bearer authentication, supply `bearer_token` as well. Automatic redirects are disabled when a service token is configured.
+
 ## API
 ### Basic v2 API
 * get_projects

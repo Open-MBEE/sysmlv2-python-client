@@ -12,19 +12,26 @@ from .exceptions import (
 )
 
 class SysMLV2Client:
-    def __init__(self, base_url: str, bearer_token: str):
+    def __init__(self, base_url: str, bearer_token: str | None = None, *, svc_token: str | None = None):
         if not base_url:
             raise ValueError("base_url cannot be empty.")
-        if not bearer_token or not bearer_token.lower().startswith("bearer "):
+        if svc_token is not None and (not svc_token or any(char.isspace() for char in svc_token)):
+            raise ValueError("svc_token must be a nonempty token without whitespace.")
+        if (bearer_token is not None or svc_token is None) and (
+            not bearer_token or not bearer_token.lower().startswith("bearer ")
+        ):
             raise ValueError("bearer_token must be provided and start with 'Bearer '.")
 
         self.base_url = base_url.rstrip('/')
         self._bearer_token = bearer_token
         self._headers = {
-            "Authorization": self._bearer_token,
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
+        if bearer_token:
+            self._headers["Authorization"] = bearer_token
+        if svc_token:
+            self._headers["X-SysMLv2-Svc-Token"] = svc_token
         self._session = requests.Session()
         self._session.headers.update(self._headers)
 
@@ -34,7 +41,7 @@ class SysMLV2Client:
         endpoint: str,
         params: Optional[Dict[str, Any]] = None,
         data: Optional[Dict[str, Any]] = None,
-        expected_status: int = 200,
+        expected_status: int | tuple[int, ...] = 200,
     ) -> Dict[str, Any]:
         url = f"{self.base_url}{endpoint}"
         json_data = data
@@ -45,6 +52,8 @@ class SysMLV2Client:
                 url=url,
                 params=params,
                 json=json_data,
+                # Requests does not strip custom credentials on cross-origin redirects.
+                allow_redirects="X-SysMLv2-Svc-Token" not in self._headers,
             )
 
             # Check for specific error codes first
@@ -61,8 +70,8 @@ class SysMLV2Client:
             if response.status_code == 409:
                 raise SysMLV2ConflictError(f"Conflict detected for {endpoint}: {response.text}")
 
-            # Check if the status code matches the expected one
-            if response.status_code != expected_status:
+            allowed_statuses = (expected_status,) if isinstance(expected_status, int) else expected_status
+            if response.status_code not in allowed_statuses:
                 raise SysMLV2APIError(
                     status_code=response.status_code,
                     message=f"Unexpected status code for {method} {endpoint}. Response: {response.text}"
@@ -97,14 +106,14 @@ class SysMLV2Client:
             method="POST",
             endpoint="/projects",
             data=project_data,
-            expected_status=200  
+            expected_status=(200, 201)
         )
 
     def delete_project(self, project_id: str):
         return self._request(
             method="DELETE",
             endpoint=f"/projects/{project_id}",
-            expected_status=200  
+            expected_status=(200, 204)
         )
 
     def get_project_by_id(self, project_id: str) -> Dict[str, Any]:
@@ -147,7 +156,7 @@ class SysMLV2Client:
             method="POST",
             endpoint=endpoint,
             data=commit_data,
-            expected_status=200 
+            expected_status=(200, 201)
         )
     
     def get_commit_by_id(self, project_id: str, commit_id: str) -> Dict[str, Any]:
@@ -182,7 +191,7 @@ class SysMLV2Client:
             method="POST",
             endpoint=endpoint,
             data=branch_data,
-            expected_status=200 
+            expected_status=(200, 201)
         )
 
     def get_branch_by_id(self, project_id: str, branch_id: str) -> Dict[str, Any]:
@@ -191,7 +200,7 @@ class SysMLV2Client:
 
     def delete_branch(self, project_id: str, branch_id: str) -> None:
         endpoint = f"/projects/{project_id}/branches/{branch_id}"
-        self._request(method="DELETE", endpoint=endpoint, expected_status=204)
+        self._request(method="DELETE", endpoint=endpoint, expected_status=(200, 204))
         return None
 
     # --- Tag Management ---
@@ -212,7 +221,7 @@ class SysMLV2Client:
             method="POST",
             endpoint=endpoint,
             data=tag_data,
-            expected_status=200 
+            expected_status=(200, 201)
         )
 
     def get_tag_by_id(self, project_id: str, tag_id: str) -> Dict[str, Any]:
@@ -221,7 +230,7 @@ class SysMLV2Client:
 
     def delete_tag(self, project_id: str, tag_id: str) -> None:
         endpoint = f"/projects/{project_id}/tags/{tag_id}"
-        self._request(method="DELETE", endpoint=endpoint, expected_status=204)
+        self._request(method="DELETE", endpoint=endpoint, expected_status=(200, 204))
         return None
 
     # --- Element/Relationship Listing ---
