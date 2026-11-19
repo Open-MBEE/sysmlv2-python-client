@@ -60,6 +60,34 @@ def test_client_initialization_invalid_url():
         SysMLV2Client(base_url="", bearer_token=TEST_BEARER_TOKEN)
 
 
+@pytest.mark.parametrize("bearer_token", [None, TEST_BEARER_TOKEN])
+def test_service_token_header(requests_mock, bearer_token):
+    client = SysMLV2Client(TEST_BASE_URL, bearer_token, svc_token="example-service-token")
+    requests_mock.get(f"{TEST_BASE_URL}/projects", json=[])
+
+    assert client.get_projects() == []
+    headers = requests_mock.last_request.headers
+    assert headers["X-SysMLv2-Svc-Token"] == "example-service-token"
+    assert headers.get("Authorization") == bearer_token
+
+
+def test_service_token_is_not_forwarded_on_redirect(requests_mock):
+    client = SysMLV2Client(TEST_BASE_URL, svc_token="example-service-token")
+    requests_mock.get(f"{TEST_BASE_URL}/projects", status_code=302,
+                      headers={"Location": "http://other.example.org/projects"})
+
+    with pytest.raises(SysMLV2APIError) as error:
+        client.get_projects()
+    assert error.value.status_code == 302
+    assert requests_mock.call_count == 1
+
+
+@pytest.mark.parametrize("svc_token", ["", " ", "token\nextra"])
+def test_client_rejects_invalid_service_token(svc_token):
+    with pytest.raises(ValueError, match="svc_token"):
+        SysMLV2Client(TEST_BASE_URL, svc_token=svc_token)
+
+
 # --- Test Get Projects ---
 
 def test_get_projects_success(client, requests_mock):
@@ -121,12 +149,13 @@ def test_get_projects_api_error(client, requests_mock):
 
 # --- Test Create Project ---
 
-def test_create_project_success(client, requests_mock):
+@pytest.mark.parametrize("status", [200, 201])
+def test_create_project_success(client, requests_mock, status):
     """Tests successfully creating a project."""
     mock_url = f"{TEST_BASE_URL}/projects"
     request_data = {"name": "New Project", "description": "A test project"}
     response_data = {"id": "new_proj_id", **request_data}
-    requests_mock.post(mock_url, json=response_data, status_code=200) 
+    requests_mock.post(mock_url, json=response_data, status_code=status)
 
     created_project = client.create_project(request_data)
 
@@ -175,14 +204,18 @@ def test_create_project_api_error(client, requests_mock):
     with pytest.raises(SysMLV2APIError, match="Unexpected status code for POST /projects"):
         client.create_project(request_data)
 
-def test_delete_project_success(client, requests_mock):
+@pytest.mark.parametrize("status", [200, 204])
+def test_delete_project_success(client, requests_mock, status):
     """Tests successfully deleting a project."""
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}"
-    requests_mock.delete(mock_url, json={}, status_code=200)
+    if status == 204:
+        requests_mock.delete(mock_url, status_code=status)
+    else:
+        requests_mock.delete(mock_url, status_code=status, json={"@id": TEST_PROJECT_ID})
 
     result = client.delete_project(TEST_PROJECT_ID)
 
-    assert result == {}
+    assert result == ({"@id": TEST_PROJECT_ID} if status == 200 else {})
     assert requests_mock.last_request.url == mock_url
     assert requests_mock.last_request.method == "DELETE"
 
@@ -270,12 +303,13 @@ def test_get_owned_elements_success_unexpected_scalar_response(client, monkeypat
 
 # --- Test Create Commit ---
 
-def test_create_commit_success(client, requests_mock):
+@pytest.mark.parametrize("status", [200, 201])
+def test_create_commit_success(client, requests_mock, status):
     """Tests successfully creating a commit."""
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/commits"
     request_data = {"message": "Initial commit", "parentCommitId": None}
     response_data = {"id": "new_commit_id", **request_data}
-    requests_mock.post(mock_url, json=response_data, status_code=200) 
+    requests_mock.post(mock_url, json=response_data, status_code=status)
 
     created_commit = client.create_commit(TEST_PROJECT_ID, request_data)
 
@@ -457,11 +491,12 @@ def test_list_branches_success_unexpected_scalar_response(client, monkeypatch):
     branches = client.list_branches(TEST_PROJECT_ID)
     assert branches == []
 
-def test_create_branch_success(client, requests_mock):
+@pytest.mark.parametrize("status", [200, 201])
+def test_create_branch_success(client, requests_mock, status):
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/branches"
     request_data = {"name": "feature-branch", "head": {"@id": TEST_COMMIT_ID}}
     response_data = {"id": "new_branch_id", **request_data}
-    requests_mock.post(mock_url, json=response_data, status_code=200) 
+    requests_mock.post(mock_url, json=response_data, status_code=status)
     branch = client.create_branch(TEST_PROJECT_ID, request_data)
     assert branch == response_data
     assert requests_mock.last_request.json() == request_data
@@ -473,9 +508,13 @@ def test_get_branch_by_id_success(client, requests_mock):
     branch = client.get_branch_by_id(TEST_PROJECT_ID, TEST_BRANCH_ID)
     assert branch == response_data
 
-def test_delete_branch_success(client, requests_mock):
+@pytest.mark.parametrize("status", [200, 204])
+def test_delete_branch_success(client, requests_mock, status):
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/branches/{TEST_BRANCH_ID}"
-    requests_mock.delete(mock_url, status_code=204)
+    if status == 204:
+        requests_mock.delete(mock_url, status_code=status)
+    else:
+        requests_mock.delete(mock_url, status_code=status, json={})
     result = client.delete_branch(TEST_PROJECT_ID, TEST_BRANCH_ID)
     assert result is None
 
@@ -509,11 +548,12 @@ def test_list_tags_success_unexpected_scalar_response(client, monkeypatch):
     tags = client.list_tags(TEST_PROJECT_ID)
     assert tags == []
 
-def test_create_tag_success(client, requests_mock):
+@pytest.mark.parametrize("status", [200, 201])
+def test_create_tag_success(client, requests_mock, status):
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/tags"
     request_data = {"name": "v1.0-release", "taggedCommit": {"@id": TEST_COMMIT_ID}}
     response_data = {"id": "new_tag_id", **request_data}
-    requests_mock.post(mock_url, json=response_data, status_code=200) 
+    requests_mock.post(mock_url, json=response_data, status_code=status)
     tag = client.create_tag(TEST_PROJECT_ID, request_data)
     assert tag == response_data
     assert requests_mock.last_request.json() == request_data
@@ -525,9 +565,13 @@ def test_get_tag_by_id_success(client, requests_mock):
     tag = client.get_tag_by_id(TEST_PROJECT_ID, TEST_TAG_ID)
     assert tag == response_data
 
-def test_delete_tag_success(client, requests_mock):
+@pytest.mark.parametrize("status", [200, 204])
+def test_delete_tag_success(client, requests_mock, status):
     mock_url = f"{TEST_BASE_URL}/projects/{TEST_PROJECT_ID}/tags/{TEST_TAG_ID}"
-    requests_mock.delete(mock_url, status_code=204)
+    if status == 204:
+        requests_mock.delete(mock_url, status_code=status)
+    else:
+        requests_mock.delete(mock_url, status_code=status, json={})
     result = client.delete_tag(TEST_PROJECT_ID, TEST_TAG_ID)
     assert result is None
 

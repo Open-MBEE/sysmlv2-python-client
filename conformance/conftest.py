@@ -39,7 +39,11 @@ def api(pytestconfig, record_property):
     if not pytestconfig.getoption("--live"):
         pytest.skip("Live provider run requires --live")
     record_property("provider_build", pytestconfig.getoption("--provider-build"))
-    server = Provider(os.environ["SYSML_CONFORMANCE_URL"], os.getenv("SYSML_CONFORMANCE_TOKEN"))
+    server = Provider(
+        os.environ["SYSML_CONFORMANCE_URL"],
+        os.getenv("SYSML_CONFORMANCE_TOKEN"),
+        svc_token=os.getenv("SYSML_CONFORMANCE_SVC_TOKEN"),
+    )
     try:
         yield server
     finally:
