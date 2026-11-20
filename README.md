@@ -105,6 +105,31 @@ except Exception as e:
 ```
 
 
+## Corporate proxies and pre-issued tokens
+
+The Python client uses Requests, which reads `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` from the Python process environment. Translate JVM proxy settings into these variables before launching Python. The proxy URL includes its scheme. If your enterprise proxy requires a custom trusted CA bundle, set `REQUESTS_CA_BUNDLE` to its path.
+
+```powershell
+$env:HTTP_PROXY = 'http://proxy.example.org:8080'
+$env:HTTPS_PROXY = 'http://proxy.example.org:8080'
+$env:NO_PROXY = 'localhost,127.0.0.1'
+```
+
+Pass a pre-issued JWT into the existing constructor as a Bearer credential:
+
+```python
+import os
+
+from sysmlv2_client import SysMLV2Client
+
+client = SysMLV2Client(
+    os.environ["SYSML_BASE_URL"],
+    bearer_token=f"Bearer {os.environ['SYSML_JWT']}",
+)
+```
+
+The token is supplied as issued. Its validity and lifetime are determined by the server.
+
 ## Running Tests
 
 Unit tests are implemented using `pytest` and `requests-mock`.

@@ -90,6 +90,32 @@ def test_client_rejects_invalid_service_token(svc_token):
 
 # --- Test Get Projects ---
 
+@pytest.mark.parametrize(
+    ("base_url", "no_proxy", "expected_proxy"),
+    [
+        ("http://sysml.example.org", "", "http://proxy.example.org:8080"),
+        ("https://sysml.example.org", "", "http://proxy.example.org:8443"),
+        ("http://127.0.0.1:62859", "127.0.0.1", None),
+    ],
+)
+def test_environment_proxy_and_static_bearer(monkeypatch, base_url, no_proxy, expected_proxy):
+    monkeypatch.setenv("http_proxy", "http://proxy.example.org:8080")
+    monkeypatch.setenv("https_proxy", "http://proxy.example.org:8443")
+    monkeypatch.setenv("no_proxy", no_proxy)
+
+    def capture_request(adapter, request, *, proxies, **kwargs):
+        assert request.url == f"{base_url}/projects"
+        assert requests.utils.select_proxy(request.url, proxies) == expected_proxy
+        assert request.headers["Authorization"] == TEST_BEARER_TOKEN
+        response = requests.Response()
+        response.status_code = 200
+        response._content = b"[]"
+        return response
+
+    monkeypatch.setattr(requests.adapters.HTTPAdapter, "send", capture_request)
+    assert SysMLV2Client(base_url, TEST_BEARER_TOKEN).get_projects() == []
+
+
 def test_get_projects_success(client, requests_mock):
     """Tests successfully retrieving projects."""
     mock_url = f"{TEST_BASE_URL}/projects"
